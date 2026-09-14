@@ -48,7 +48,7 @@ struct DeckView: View {
     }
     var header: some View {
         HStack(alignment:.center,spacing:10) {
-            Image("Icon60").resizable().frame(width:26,height:26).clipShape(RoundedRectangle(cornerRadius:6))
+            Image(uiImage:UIImage(contentsOfFile:Bundle.main.path(forResource:"Icon60@3x",ofType:"png") ?? "") ?? UIImage(systemName:"square.grid.2x2.fill")!).resizable().frame(width:26,height:26).clipShape(RoundedRectangle(cornerRadius:6))
             Text("CODEX").font(.system(size:23,weight:.black,design:.rounded)).tracking(1)
             Text("DECK").font(.system(size:13,weight:.semibold,design:.monospaced)).foregroundStyle(.gray)
             Spacer(minLength:0)
