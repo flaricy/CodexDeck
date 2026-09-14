@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="Codex Deck">
+  <rect width="1024" height="1024" rx="232" fill="#253a32"/>
+  <rect x="176" y="176" width="304" height="304" rx="68" fill="#f5f2e8"/>
+  <rect x="176" y="544" width="304" height="304" rx="68" fill="#8bb8bb"/>
+  <rect x="544" y="176" width="304" height="672" rx="68" fill="#c8e68a"/>
+  <path d="M624 587 768 443M640 443h128v128" fill="none" stroke="#253a32" stroke-width="35" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

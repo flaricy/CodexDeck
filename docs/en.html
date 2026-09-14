@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Codex Deck — Work on Mac. Stay in flow.</title>
+    <meta
+      name="description"
+      content="Turn your iPhone into a Codex session deck. See status and usage, then tap a key to return to the right task on your Mac. Native SwiftUI. MIT licensed."
+    />
+    <meta name="theme-color" content="#f5f3ec" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Codex Deck — Work on Mac. Stay in flow."
+    />
+    <meta
+      property="og:description"
+      content="A new purpose for the iPhone on your desk. A native, always-on, open-source Codex session deck."
+    />
+    <meta
+      property="og:image"
+      content="https://flaricy.github.io/CodexDeck/assets/social.png"
+    />
+    <meta
+      property="og:url"
+      content="https://flaricy.github.io/CodexDeck/en.html"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://flaricy.github.io/CodexDeck/en.html" />
+    <link
+      rel="alternate"
+      hreflang="zh-CN"
+      href="https://flaricy.github.io/CodexDeck/"
+    />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://flaricy.github.io/CodexDeck/en.html"
+    />
+    <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/icon-180.png" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="wrap header">
+      <a class="brand" href="./" aria-label="Codex Deck home"
+        ><img src="assets/mark.svg" width="38" height="38" alt="" /><span
+          >Codex Deck</span
+        ></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#experience">Experience</a><a href="#install">Install</a
+        ><a href="https://github.com/flaricy/CodexDeck">GitHub ↗</a
+        ><a href="./" lang="zh-CN">中文</a>
+      </nav>
+    </header>
+    <main id="main">
+      <section class="wrap hero">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="dot"></span>iPhone + Mac · Open source
+          </p>
+          <h1>Work on Mac.<br /><em>Stay in flow.</em></h1>
+          <p class="intro">
+            Keep your iPhone beside your keyboard.<br />See what’s running and
+            what’s ready.<br />One tap brings the right Codex session forward.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="#install"
+              >Get started <span aria-hidden="true">↗</span></a
+            ><a class="text-link" href="#experience"
+              >Try the deck <span aria-hidden="true">↓</span></a
+            >
+          </div>
+          <p class="meta">Native SwiftUI · iOS 17+ · macOS 14+</p>
+        </div>
+        <div
+          class="hero-art"
+          aria-label="Codex Deck interface illustration with sample data"
+        >
+          <div class="paper-shape"></div>
+          <span class="margin-note"
+            >A LITTLE DECK.<br />A LITTLE MORE FOCUS.</span
+          >
+          <div class="desk-window">
+            <div class="window-top">
+              <i></i><i></i><i></i><span>Codex on Mac</span>
+            </div>
+            <div class="desk-content">
+              <div class="tiny-sidebar">
+                <b>Workspace</b><span class="chosen">Design system</span
+                ><span>Refine sync logic</span>
+              </div>
+              <div class="tiny-code">
+                <span class="terminal-label">Design system</span>
+                <div class="code-line w80"></div>
+                <div class="code-line w60"></div>
+                <div class="code-line w90"></div>
+                <div class="code-line w50"></div>
+                <span class="cursor"></span>
+              </div>
+            </div>
+          </div>
+          <div class="phone hero-phone">
+            <div class="island"></div>
+            <div class="phone-ui">
+              <div class="phone-heading">
+                <span class="mini-mark">▦</span><b>CODEX <small>DECK</small></b
+                ><span class="phone-count">02</span>
+              </div>
+              <div class="phone-usage">
+                <span>CODEX REMAINING</span>
+                <div>
+                  <strong>76<small>%</small></strong
+                  ><span>7 days</span>
+                </div>
+                <div class="usage-track"><i></i></div>
+                <small>Resets Fri 16:30</small>
+              </div>
+              <div class="illustrated-key blue">
+                <div class="key-top"><span>≋</span><small>01</small></div>
+                <div>
+                  <h3>Design system</h3>
+                  <p>Running <span>↗</span></p>
+                  <small>studio / design</small>
+                </div>
+              </div>
+              <div class="illustrated-key green">
+                <div class="key-top"><span>✓</span><small>02</small></div>
+                <div>
+                  <h3>Refine sync logic</h3>
+                  <p>Done <span>↗</span></p>
+                  <small>app / core</small>
+                </div>
+              </div>
+              <div class="phone-foot"><i></i> Mac connected <span>☀</span></div>
+            </div>
+          </div>
+          <span class="connection-line" aria-hidden="true">↗</span>
+          <div class="art-caption">
+            <span>01 / YOUR DESK, CONNECTED</span
+            ><span>Illustration · sample data</span>
+          </div>
+        </div>
+      </section>
+      <div class="wrap facts">
+        <span><i>01</i> Up to three sessions</span
+        ><span><i>02</i> One tap back to Mac</span
+        ><span><i>03</i> Keeps your iPhone awake</span
+        ><span><i>04</i> On your local network</span>
+      </div>
+      <section class="wrap experience" id="experience">
+        <div class="section-copy">
+          <p class="eyebrow">ONE TAP. BACK TO WORK.</p>
+          <h2>Tap a key.<br />Find your focus.</h2>
+          <p>
+            Each key is a session.<br />One fills the deck. Two or three share
+            it.<br />Finished with a task? Hide it with a tap.
+          </p>
+          <div
+            class="count-control"
+            role="group"
+            aria-label="Number of demo sessions"
+          >
+            <button type="button" data-count="1" aria-pressed="false">
+              1 key</button
+            ><button type="button" data-count="2" aria-pressed="true">
+              2 keys</button
+            ><button type="button" data-count="3" aria-pressed="false">
+              3 keys
+            </button>
+          </div>
+          <p class="demo-note">
+            Interactive illustration. It won’t control your Mac.
+          </p>
+        </div>
+        <div class="demo-stage">
+          <div class="demo-top">
+            <span><i class="dot"></i> KEYBOARD PREVIEW</span
+            ><button class="reset-demo" type="button">Reset demo ↺</button>
+          </div>
+          <div class="demo-keys" id="demo-keys"></div>
+          <div class="mac-response" aria-live="polite">
+            <span class="response-icon">↗</span>
+            <div>
+              <small>SESSION ON MAC</small
+              ><strong id="focused-title">Design system</strong>
+            </div>
+            <span class="response-state" id="response-state">Tap a key</span>
+          </div>
+        </div>
+      </section>
+      <section class="wrap features" aria-label="Features">
+        <article>
+          <span class="index">01 / AT A GLANCE</span>
+          <h3>See it at a glance.</h3>
+          <p>
+            Blue means running. Green means done, with STOP for stopped tasks.
+            Usage and reset times stay in sight, without interrupting your work.
+          </p>
+          <div class="feature-sample">
+            <span class="state-pill blue-pill">● Running</span
+            ><span class="state-pill green-pill">■ STOP</span>
+          </div>
+        </article>
+        <article>
+          <span class="index">02 / JUST YOUR TASKS</span>
+          <h3>Keep what matters.</h3>
+          <p>
+            Up to three generous keys, in portrait or landscape. New sessions
+            join automatically. Hidden sessions stay hidden until you bring them
+            back.
+          </p>
+          <div class="feature-sample mini-deck" aria-hidden="true">
+            <i></i><i></i><i></i><span>1 → 2 → 3</span>
+          </div>
+        </article>
+        <article>
+          <span class="index">03 / STAYS WITH YOU</span>
+          <h3>Ready beside you.</h3>
+          <p>
+            Your iPhone stays awake by default; the sun button toggles it without affecting Mac sleep. A lost connection
+            preserves your deck and reconnects automatically. The Mac companion
+            lives quietly in the menu bar.
+          </p>
+          <div class="feature-sample">
+            <span class="sun-symbol">☀</span><span>READY WHEN YOU ARE.</span>
+          </div>
+        </article>
+      </section>
+      <section class="wrap setup">
+        <div>
+          <p class="eyebrow">A SMALL RITUAL. THEN, NOTHING.</p>
+          <h2>Pair once.<br />Keep it close.</h2>
+          <p>
+            Scan the code in your Mac’s menu bar.<br />A few satisfying keys,
+            right beside your keyboard.
+          </p>
+        </div>
+        <ol class="steps">
+          <li>
+            <span>01</span>
+            <div>
+              <h3>Open the Mac companion</h3>
+              <p>
+                Find the deck icon in your menu bar. No terminal window needed.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span>02</span>
+            <div>
+              <h3>Scan to pair your iPhone</h3>
+              <p>Use the same network and allow local network access.</p>
+            </div>
+          </li>
+          <li>
+            <span>03</span>
+            <div>
+              <h3>Set it beside your keyboard</h3>
+              <p>Keep Codex Deck open. The screen stays on.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+      <section class="wrap download" id="install">
+        <div class="download-copy">
+          <img
+            src="assets/mark.svg"
+            width="74"
+            height="74"
+            alt="Codex Deck logo"
+          />
+          <p class="eyebrow">YOURS TO USE. YOURS TO BUILD.</p>
+          <h2>One more use for your iPhone.</h2>
+          <p>
+            No extra control pad to buy.<br />One native app. A little less
+            friction.
+          </p>
+        </div>
+        <div class="install-card">
+          <span class="version">v1.0.1 · MIT</span>
+          <h3>Start with your Mac.</h3>
+          <a
+            class="button"
+            href="https://github.com/flaricy/CodexDeck/releases/download/v1.0.1/CodexDeck-1.0.1-macOS-arm64.zip"
+            >↓ Download for Mac <span aria-hidden="true">↗</span></a
+          >
+          <p class="meta">Apple Silicon · macOS 14+ · Requires Python 3</p>
+          <a
+            class="install-source"
+            href="https://github.com/flaricy/CodexDeck/blob/main/INSTALL.md"
+            >iPhone setup & signing guide ↗</a
+          >
+          <p class="install-note">
+            Build and sign the iPhone app in Xcode with your own Apple ID. There
+            is no App Store or TestFlight version yet. The Mac download is not
+            notarized; see the install guide before opening it.
+          </p>
+        </div>
+      </section>
+      <section class="wrap faq" aria-labelledby="faq-title">
+        <h2 id="faq-title">A few things to know.</h2>
+        <div>
+          <details>
+            <summary>Does Deck upload my sessions?</summary>
+            <p>
+              Deck sends session names, status and usage over local HTTPS,
+              without a relay server. Pairing keys stay on your devices. Codex
+              itself still connects to its services as usual.
+            </p>
+          </details>
+          <details>
+            <summary>Will it catch every pending question?</summary>
+            <p>
+              Not yet. Local Codex records do not provide a complete, reliable
+              stream of pending questions and approvals. This version is not a
+              question notifier. Status follows saved records; output silence is
+              never treated as a stop.
+            </p>
+          </details>
+          <details>
+            <summary>Which sessions are supported?</summary>
+            <p>
+              Local main sessions from Codex desktop and extension sources are
+              supported. SSH hosts and subagents are not included. A successful
+              tap confirms that macOS accepted the session link.
+            </p>
+          </details>
+          <details>
+            <summary>Is this an official OpenAI product?</summary>
+            <p>
+              No. Codex Deck is an independent open-source project by flaricy.
+              It is not affiliated with or endorsed by OpenAI.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+    <footer class="wrap footer">
+      <a class="brand" href="./"
+        ><img src="assets/mark.svg" width="28" height="28" alt="" /><span
+          >Codex Deck</span
+        ></a
+      ><span>Made by flaricy · 2026</span>
+      <div>
+        <a href="https://github.com/flaricy/CodexDeck">Source ↗</a
+        ><a href="https://github.com/flaricy/CodexDeck/issues">Feedback</a
+        ><a href="https://flaricy.github.io/SwiftNote/">SwiftNote ↗</a>
+      </div>
+    </footer>
+  </body>
+</html>

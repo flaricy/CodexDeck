@@ -1,0 +1,12 @@
+{
+  "name": "codex-deck-site",
+  "private": true,
+  "scripts": {
+    "brand": "node scripts/render-brand.cjs",
+    "preview": "python3 -m http.server 8768 --bind 127.0.0.1 --directory docs",
+    "test:site": "node scripts/test-site.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}
