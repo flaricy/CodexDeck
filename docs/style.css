@@ -1316,7 +1316,7 @@ html[lang="en"] .download-copy h2 {
   height: 44%;
   transform: perspective(120cqw) rotateX(43deg) rotateZ(-5deg);
   transform-origin: 50% 100%;
-  transform-style: preserve-3d;
+  transform-style: flat;
 }
 .desk-plane .scene-keyboard {
   top: 43%;
