@@ -261,7 +261,7 @@ struct PairingView: View {
                     if model.demo && model.pairing != nil {Button("返回我的 Mac") {model.exitDemo();dismiss();Task{await model.refresh()}}}
                 }
                 #endif
-                Section {Text("Codex Deck 1.0.1").font(.footnote).foregroundStyle(.secondary)}
+                Section {Text("Codex Deck 1.0.2").font(.footnote).foregroundStyle(.secondary)}
             }.navigationTitle("我的键盘").toolbar {ToolbarItem(placement:.confirmationAction){Button("完成"){dismiss()}}}
             .confirmationDialog("移除后需要重新扫码连接",isPresented:$confirmUnpair,titleVisibility:.visible) {Button("移除此 Mac",role:.destructive){model.unpair()}}
             .sheet(isPresented:$scanning) {

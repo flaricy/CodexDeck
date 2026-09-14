@@ -4,7 +4,7 @@ import pathlib,plistlib,shutil,subprocess,sys,struct
 root=pathlib.Path(__file__).resolve().parents[1]
 app=root/'Codex Deck Mac.app'
 contents=app/'Contents';(contents/'MacOS').mkdir(parents=True,exist_ok=True);(contents/'Resources').mkdir(exist_ok=True)
-info={'CFBundleIdentifier':'dev.codexdeck.mac','CFBundleName':'Codex Deck Mac','CFBundleDisplayName':'Codex Deck','CFBundleExecutable':'CodexDeckMac','CFBundlePackageType':'APPL','CFBundleShortVersionString':'1.0.1','CFBundleVersion':'11','LSUIElement':True,'LSMinimumSystemVersion':'14.0','CFBundleIconFile':'Deck.icns'}
+info={'CFBundleIdentifier':'dev.codexdeck.mac','CFBundleName':'Codex Deck Mac','CFBundleDisplayName':'Codex Deck','CFBundleExecutable':'CodexDeckMac','CFBundlePackageType':'APPL','CFBundleShortVersionString':'1.0.2','CFBundleVersion':'12','LSUIElement':True,'LSMinimumSystemVersion':'14.0','CFBundleIconFile':'Deck.icns'}
 (contents/'Info.plist').write_bytes(plistlib.dumps(info))
 png=(root/'Artwork/Assets.xcassets/AppIcon.appiconset/AppIcon.png').read_bytes()
 (contents/'Resources/Deck.icns').write_bytes(b'icns'+struct.pack('>I',16+len(png))+b'ic10'+struct.pack('>I',8+len(png))+png)
