@@ -29,6 +29,15 @@ process.on("exit", () => server.kill());
   });
   const errors = [];
   const report = [];
+  const animated = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  await animated.goto('http://127.0.0.1:8769/');
+  await animated.waitForFunction(() => document.querySelector('[data-scene-session="1"]').getAttribute('aria-pressed') === 'true', { timeout: 10000 });
+  await animated.locator('.scene-motion').click();
+  const frozen = await animated.locator('#scene-title').innerText();
+  await animated.waitForTimeout(4300);
+  assert.equal(await animated.locator('#scene-title').innerText(), frozen);
+  await animated.screenshot({path: '.test-results/hero-scene.png'});
+  await animated.close();
   for (const width of [1440, 768, 390, 320]) {
     for (const lang of ["index.html", "en.html"]) {
       const page = await browser.newPage({
@@ -45,6 +54,11 @@ process.on("exit", () => server.kill());
         ),
         `overflow ${width} ${lang}`,
       );
+      await page.locator('[data-scene-session="1"]').click();
+      assert((await page.locator('#scene-title').innerText()).includes(lang === 'en.html' ? 'Sync' : '同步'));
+      assert.equal(await page.locator('[data-scene-tab="1"]').getAttribute('class'), 'selected');
+      assert.equal(await page.locator('[data-scene-session="1"]').getAttribute('aria-pressed'), 'true');
+      await page.locator('[data-scene-session="0"]').click();
       for (const count of [1, 3, 2]) {
         await page.locator(`[data-count="${count}"]`).click();
         assert.equal(await page.locator(".demo-key").count(), count);

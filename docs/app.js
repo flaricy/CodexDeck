@@ -111,3 +111,50 @@
   });
   render();
 })();
+
+(() => {
+  const scene = document.querySelector('.workspace-visual');
+  if (!scene) return;
+  const en = document.documentElement.lang === 'en';
+  const keys = [...scene.querySelectorAll('[data-scene-session]')];
+  const tabs = [...scene.querySelectorAll('[data-scene-tab]')];
+  const touch = scene.querySelector('.scene-touch');
+  const motion = scene.querySelector('.scene-motion');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const answers = en ? ['The components are taking shape. Refining spacing and typography…', 'Sync is up to date. The changes are ready for your review.', 'Release review paused. Pick up right where you left off.'] : ['组件已逐步成形，正在统一间距与排版…', '同步逻辑已更新，修改已完成，等你检查。', '发布检查已停止，随时可以从这里继续。'];
+  const prompts = en ? ['Make every detail feel consistent.', 'Keep my sessions in sync.', 'Check the release before shipping.'] : ['让每一个界面细节保持一致。', '让我的会话始终保持同步。', '发布前，再检查一遍。'];
+  let selected = 0, paused = reduced.matches, visible = true, cycle, press, release;
+  const cancel = () => { clearTimeout(cycle); clearTimeout(press); clearTimeout(release); touch.classList.remove('visible'); keys.forEach(k => k.classList.remove('pressing')); };
+  function render(index) {
+    selected = index;
+    keys.forEach((key, i) => key.setAttribute('aria-pressed', String(i === index)));
+    tabs.forEach((tab, i) => tab.classList.toggle('selected', i === index));
+    scene.querySelector('#scene-title').textContent = keys[index].querySelector('b').textContent;
+    scene.querySelector('#scene-answer').textContent = answers[index];
+    scene.querySelector('.scene-prompt').textContent = prompts[index];
+    scene.querySelector('.scene-project').textContent = ['STUDIO / DESIGN', 'APP / CORE', 'SHIP / REVIEW'][index];
+    scene.querySelector('#scene-caption').textContent = (en ? 'Mac switched to: ' : 'Mac 已切换：') + keys[index].querySelector('b').textContent;
+  }
+  function schedule() {
+    if (paused || !visible || document.hidden) return;
+    cycle = setTimeout(() => activate((selected + 1) % keys.length, true), 3400);
+  }
+  function activate(index, automatic) {
+    cancel();
+    const key = keys[index];
+    if (!reduced.matches) {
+      touch.style.top = `${key.offsetTop + key.offsetHeight / 2}px`;
+      // offsetTop is relative to the positioned phone, matching the touch marker.
+      touch.classList.add('visible');
+    }
+    const perform = () => { key.classList.add('pressing'); render(index); release = setTimeout(() => { key.classList.remove('pressing'); touch.classList.remove('visible'); schedule(); }, 650); };
+    if (automatic) press = setTimeout(perform, 650); else perform();
+  }
+  function label() { motion.textContent = paused ? '▶' : 'Ⅱ'; motion.setAttribute('aria-label', en ? (paused ? 'Play animation' : 'Pause animation') : (paused ? '播放动画' : '暂停动画')); }
+  keys.forEach((key, index) => key.addEventListener('click', () => activate(index, false)));
+  motion.addEventListener('click', () => { paused = !paused; cancel(); label(); schedule(); });
+  reduced.addEventListener('change', () => { paused = reduced.matches; cancel(); label(); schedule(); });
+  document.addEventListener('visibilitychange', () => { cancel(); schedule(); });
+  new IntersectionObserver(entries => { visible = entries[0].isIntersecting; cancel(); schedule(); }, {threshold: .15}).observe(scene);
+  label();
+})();
