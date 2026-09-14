@@ -5,7 +5,7 @@
 
 把 iPhone 放在键盘旁，作为 Codex 的会话状态盘和快捷键。抬眼看状态，轻点回到 Mac 对应任务。
 
-![Codex Deck](docs/assets/social.png)
+[![Codex Deck — keyboard-side session shortcuts](docs/assets/desk-scene.png)](https://flaricy.github.io/CodexDeck/)
 
 ## 能做什么
 

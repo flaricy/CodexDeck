@@ -5,7 +5,7 @@
 
 Turn an iPhone into a native Codex session deck. Keep it beside your keyboard, glance at task status and remaining usage, and tap a large key to open that session on your Mac.
 
-![Codex Deck](docs/assets/social.png)
+[![Codex Deck — keyboard-side session shortcuts](docs/assets/desk-scene.png)](https://flaricy.github.io/CodexDeck/)
 
 ## Features
 
