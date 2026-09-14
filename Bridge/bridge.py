@@ -57,7 +57,7 @@ class History:
         with self.connect('state_5.sqlite') as db:
             columns = {x[1] for x in db.execute('PRAGMA table_info(threads)')}
             name = 'name' if 'name' in columns else 'NULL AS name'
-            rows = db.execute(f"SELECT id,title,{name},cwd,updated_at,source,originator FROM threads WHERE archived=0 AND source NOT LIKE '%subagent%' ORDER BY updated_at DESC LIMIT 60").fetchall()
+            rows = db.execute(f"SELECT id,title,{name},cwd,updated_at,source,originator FROM threads WHERE archived=0 AND source='vscode' ORDER BY updated_at DESC LIMIT 60").fetchall()
         result = []
         with self.connect('thread_history_1.sqlite') as db:
             for row in rows:
@@ -134,6 +134,7 @@ def handler(deck):
     class Handler(BaseHTTPRequestHandler):
         def setup(self):
             super().setup(); self.connection.settimeout(5)
+            if isinstance(self.connection,ssl.SSLSocket): self.connection.do_handshake()
         def log_message(self,*args):pass  # Never log pairing credentials or conversation titles.
         def reply(self,code,data):
             b=json.dumps(data,ensure_ascii=False).encode();self.send_response(code);self.send_header('Content-Type','application/json; charset=utf-8');self.send_header('Content-Length',str(len(b)));self.send_header('Cache-Control','no-store');self.end_headers();self.wfile.write(b)
@@ -150,7 +151,9 @@ def handler(deck):
             try:
                 n=int(self.headers.get('Content-Length','0'))
                 if not 0<n<=1024:raise ValueError('无效请求')
-                data=json.loads(self.rfile.read(n));deck.focus(data.get('threadId'));self.reply(200,{'ok':True})
+                data=json.loads(self.rfile.read(n))
+                if not isinstance(data,dict) or not isinstance(data.get('threadId'),str):raise ValueError('无效请求')
+                deck.focus(data['threadId']);self.reply(200,{'ok':True})
             except (ValueError,subprocess.SubprocessError):self.reply(400,{'error':'无法打开会话，请检查 Mac 上的 Codex'})
     return Handler
 
@@ -177,12 +180,17 @@ def main():
             with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as s:s.connect(('192.0.2.1',80));host=s.getsockname()[0]
         except OSError:host=socket.gethostname()
     pairing='codexdeck://pair?'+urlencode({'host':host,'port':args.port,'token':token,'pin':pin})
-    (runtime/'pairing.txt').write_text(pairing)
-    print('\nCodex Deck · 在 iPhone 配对页粘贴下方链接（仅分享给自己的手机）：\n'+pairing+'\n',flush=True)
     quota=Quota(args.codex);deck=Deck(history,quota,token);deck.refresh()
     threading.Thread(target=deck.loop,daemon=True).start();threading.Thread(target=quota.loop,daemon=True).start()
     server=ThreadingHTTPServer((args.host or host,args.port),handler(deck));server.daemon_threads=True
-    ctx=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);ctx.minimum_version=ssl.TLSVersion.TLSv1_2;ctx.load_cert_chain(cert,key);server.socket=ctx.wrap_socket(server.socket,server_side=True)
+    ctx=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);ctx.minimum_version=ssl.TLSVersion.TLSv1_2;ctx.load_cert_chain(cert,key);server.socket=ctx.wrap_socket(server.socket,server_side=True,do_handshake_on_connect=False)
+    # Publish readiness only after binding and configuring TLS. A PID ties it to
+    # this process so an old file cannot make a replacement child look ready.
+    (runtime/'pairing.txt').write_text(pairing)
+    pending=runtime/'ready.tmp'
+    pending.write_text(json.dumps({'pid':os.getpid(),'pairing':pairing}))
+    pending.replace(runtime/'ready.json')
+    print('Codex Deck connection service ready.',flush=True)
     try:server.serve_forever()
     except KeyboardInterrupt:pass
     finally:server.server_close()

@@ -12,12 +12,13 @@ import ServiceManagement
     private var timer: Timer?
     private var address=""
     private var wantsRunning=true
+    private var sleeping=false
     let runtime=FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support/CodexDeck")
     init() {
         start()
         timer=Timer.scheduledTimer(withTimeInterval:5,repeats:true) { [weak self] _ in Task { @MainActor in self?.check() } }
-        NSWorkspace.shared.notificationCenter.addObserver(forName:NSWorkspace.willSleepNotification,object:nil,queue:.main) { [weak self] _ in Task { @MainActor in self?.stop() } }
-        NSWorkspace.shared.notificationCenter.addObserver(forName:NSWorkspace.didWakeNotification,object:nil,queue:.main) { [weak self] _ in Task { @MainActor in self?.start() } }
+        NSWorkspace.shared.notificationCenter.addObserver(forName:NSWorkspace.willSleepNotification,object:nil,queue:.main) { [weak self] _ in Task { @MainActor in self?.sleep() } }
+        NSWorkspace.shared.notificationCenter.addObserver(forName:NSWorkspace.didWakeNotification,object:nil,queue:.main) { [weak self] _ in Task { @MainActor in self?.wake() } }
     }
     func command(_ path:String,_ arguments:[String]) -> String {
         let p=Process();p.executableURL=URL(fileURLWithPath:path);p.arguments=arguments
@@ -35,6 +36,7 @@ import ServiceManagement
     func start() {
         wantsRunning=true
         guard child?.isRunning != true else{return}
+        running=false;link=""
         address=localIP()
         guard !address.isEmpty else {status="请先连接 Wi-Fi 或以太网";running=false;return}
         let configured=(Bundle.main.object(forInfoDictionaryKey:"DeckPython") as? String) ?? ""
@@ -57,12 +59,27 @@ import ServiceManagement
         }catch{status="无法启动连接服务："+error.localizedDescription}
     }
     func check() {
-        guard wantsRunning else{return}
+        guard wantsRunning && !sleeping else{return}
         let current=localIP()
         if current != address {stop();start()}
         guard child?.isRunning == true else {start();return}
-        link=(try? String(contentsOf:runtime.appendingPathComponent("pairing.txt"),encoding:.utf8).trimmingCharacters(in:.whitespacesAndNewlines)) ?? ""
-        if !link.isEmpty {running=true;status="已就绪 · iPhone 可连接"}
+        guard let data=try? Data(contentsOf:runtime.appendingPathComponent("ready.json")),
+              let ready=try? JSONDecoder().decode(Readiness.self,from:data),
+              ready.pid == child?.processIdentifier, !ready.pairing.isEmpty else {
+            running=false;link="";return
+        }
+        link=ready.pairing;running=true;status="已就绪 · iPhone 可连接"
+    }
+    private struct Readiness: Decodable {let pid:Int32;let pairing:String}
+    private func sleep() {
+        let resume=wantsRunning
+        sleeping=true
+        stop()
+        wantsRunning=resume
+    }
+    private func wake() {
+        sleeping=false
+        if wantsRunning {start()}
     }
     func stop() {wantsRunning=false;child?.terminationHandler=nil;child?.terminate();child?.waitUntilExit();child=nil;running=false;status="已暂停连接"}
     func toggleLogin() {

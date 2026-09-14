@@ -54,11 +54,27 @@ class Tests(unittest.TestCase):
             run.assert_not_called();deck.focus(id);run.assert_called_once_with(['/usr/bin/open','codex://threads/'+id],check=True,timeout=5)
             deck.at=0
             with self.assertRaises(ValueError):deck.focus(id)
+    def test_focus_rejects_non_object_and_non_string_payloads(self):
+        import io
+        from unittest.mock import Mock
+        deck=Mock(); deck.token='test-token'
+        cls=b.handler(deck)
+        for payload in ([], None, 7, 'text', {'threadId':[]}, {'threadId':7}, {}):
+            body=json.dumps(payload).encode()
+            request=object.__new__(cls)
+            request.headers={'Authorization':'Bearer test-token','Content-Length':str(len(body))}
+            request.path='/v1/focus';request.rfile=io.BytesIO(body);request.reply=Mock()
+            request.do_POST()
+            self.assertEqual(request.reply.call_args.args[0],400)
+        deck.focus.assert_not_called()
     def test_readonly_history(self):
         with tempfile.TemporaryDirectory() as d:
             c=sqlite3.connect(d+'/state_5.sqlite');c.execute('create table threads(id,title,cwd,updated_at,source,originator,archived)');c.execute('insert into threads values(?,?,?,?,?,?,?)',('1','Title','/a/project',100,'vscode','Codex Desktop',0));c.commit();c.close()
             c=sqlite3.connect(d+'/thread_history_1.sqlite');c.execute('create table thread_turns(thread_id,turn_id,rollout_ordinal,status,started_at)');c.execute('create table thread_items(thread_id,turn_id,rollout_ordinal,item_json,created_at_ms)');c.execute("insert into thread_turns values('1','t',1,'completed',99)");c.commit();c.close()
             self.assertEqual(b.History(d).sessions()[0]['state'],'done')
+            with sqlite3.connect(d+'/state_5.sqlite') as extra:
+                extra.executemany('insert into threads values(?,?,?,?,?,?,?)',[(str(i),'CLI','/a',200+i,'cli','cli',0) for i in range(2,72)])
+            self.assertEqual([x['id'] for x in b.History(d).sessions()],['1'])
             c=sqlite3.connect(d+'/state_5.sqlite')
             c.execute('alter table threads add column name TEXT')
             c.execute("update threads set name='桌面会话名称'");c.commit()

@@ -22,12 +22,13 @@ final class ScannerController: UIViewController, AVCaptureMetadataOutputObjectsD
         super.viewDidLoad();view.backgroundColor = .black
         switch AVCaptureDevice.authorizationStatus(for:.video) {
         case .authorized:setup()
-        case .notDetermined:AVCaptureDevice.requestAccess(for:.video) { [weak self] granted in DispatchQueue.main.async {if granted {self?.setup()}else{self?.failed?("请在设置中允许相机访问，或使用粘贴链接连接。")}}}
+        case .notDetermined:AVCaptureDevice.requestAccess(for:.video) { [weak self] granted in DispatchQueue.main.async {guard let self, !self.stopped else{return};if granted {self.setup()}else{self.failed?("请在设置中允许相机访问，或使用粘贴链接连接。")}}}
         default:failed?("请在设置中允许相机访问，或使用粘贴链接连接。")
         }
     }
     private func setup() {
-        guard !stopped,isViewLoaded,let camera=AVCaptureDevice.default(for:.video),let input=try? AVCaptureDeviceInput(device:camera),session.canAddInput(input) else {failed?("相机暂不可用，请使用粘贴链接连接。");return}
+        guard !stopped else{return}
+        guard isViewLoaded,let camera=AVCaptureDevice.default(for:.video),let input=try? AVCaptureDeviceInput(device:camera),session.canAddInput(input) else {failed?("相机暂不可用，请使用粘贴链接连接。");return}
         session.addInput(input)
         let output=AVCaptureMetadataOutput()
         guard session.canAddOutput(output) else{failed?("无法打开扫描器");return}
@@ -38,7 +39,7 @@ final class ScannerController: UIViewController, AVCaptureMetadataOutputObjectsD
     override func viewDidLayoutSubviews() {super.viewDidLayoutSubviews();preview?.frame=view.bounds}
     func stop() {stopped=true;queue.async { [session] in if session.isRunning {session.stopRunning()} }}
     func metadataOutput(_ output:AVCaptureMetadataOutput,didOutput objects:[AVMetadataObject],from connection:AVCaptureConnection) {
-        guard !delivered,let text=(objects.first as? AVMetadataMachineReadableCodeObject)?.stringValue else{return}
+        guard !stopped,!delivered,let text=(objects.first as? AVMetadataMachineReadableCodeObject)?.stringValue else{return}
         guard (try? Pairing(text)) != nil else{return}
         delivered=true;stop();found?(text)
     }

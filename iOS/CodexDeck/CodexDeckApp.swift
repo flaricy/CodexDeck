@@ -48,7 +48,7 @@ struct DeckView: View {
     }
     var header: some View {
         HStack(alignment:.center,spacing:10) {
-            Image(uiImage:UIImage(contentsOfFile:Bundle.main.path(forResource:"Icon60@3x",ofType:"png") ?? "") ?? UIImage(systemName:"square.grid.2x2.fill")!).resizable().frame(width:26,height:26).clipShape(RoundedRectangle(cornerRadius:6))
+            DeckBrandMark().frame(width:30,height:30).accessibilityLabel("Codex Deck 标志").accessibilityIdentifier("deck-brand-mark")
             Text("CODEX").font(.system(size:23,weight:.black,design:.rounded)).tracking(1)
             Text("DECK").font(.system(size:13,weight:.semibold,design:.monospaced)).foregroundStyle(.gray)
             Spacer(minLength:0)
@@ -284,3 +284,25 @@ struct PairingView: View {
     }
 }
 #Preview {DeckView().environmentObject(DeckModel())}
+
+// Same geometry and palette as Brand/mark.svg; independent of app-icon loading.
+struct DeckBrandMark: View {
+    var body: some View {
+        Canvas { context, size in
+            let scale=min(size.width,size.height)/1024
+            context.scaleBy(x:scale,y:scale)
+            let ink=Color(red:37/255.0,green:58/255.0,blue:50/255.0)
+            func tile(_ x:Double,_ y:Double,_ w:Double,_ h:Double,_ radius:Double,_ color:Color) {
+                context.fill(Path(roundedRect:CGRect(x:x,y:y,width:w,height:h),cornerRadius:radius),with:.color(color))
+            }
+            tile(0,0,1024,1024,232,ink)
+            tile(176,176,304,304,68,Color(red:245/255.0,green:242/255.0,blue:232/255.0))
+            tile(176,544,304,304,68,Color(red:139/255.0,green:184/255.0,blue:187/255.0))
+            tile(544,176,304,672,68,Color(red:200/255.0,green:230/255.0,blue:138/255.0))
+            var arrow=Path()
+            arrow.move(to:CGPoint(x:624,y:587));arrow.addLine(to:CGPoint(x:768,y:443))
+            arrow.move(to:CGPoint(x:640,y:443));arrow.addLine(to:CGPoint(x:768,y:443));arrow.addLine(to:CGPoint(x:768,y:571))
+            context.stroke(arrow,with:.color(ink),style:StrokeStyle(lineWidth:35,lineCap:.round,lineJoin:.round))
+        }
+    }
+}

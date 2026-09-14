@@ -16,6 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: swiftc iOS/CodexDeck/SessionSelection.swift Tests/SelectionTests.swift -o /tmp/deck-tests && /tmp/deck-tests
+      - run: python3 -m unittest discover -s Tests -v
       - run: python3 macOS/build.py
       - run: xcodebuild -project iOS/CodexDeck.xcodeproj -scheme CodexDeck -sdk iphoneos -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
   website:

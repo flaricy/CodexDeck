@@ -62,7 +62,10 @@ enum DeckError: LocalizedError {
     case message(String)
     var errorDescription: String? { if case .message(let s)=self { return s }; return nil }
 }
-final class PinnedTrust: NSObject, URLSessionDelegate {
+final class PinnedTrust: NSObject, URLSessionTaskDelegate {
+    func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
+        completionHandler(nil) // Pairing authorizes one endpoint; never forward its bearer token.
+    }
     let pin: String
     init(pin: String) { self.pin=pin }
     func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
@@ -181,7 +184,8 @@ enum Vault {
         refreshing=true;defer{refreshing=false}
         do {
             let data=try await request("/v1/state");let value=try JSONDecoder().decode(Snapshot.self,from:data)
-            guard generation==epoch else{return}
+            guard generation==epoch, !Task.isCancelled else{return}
+            guard Set(value.sessions.map(\.id)).count == value.sessions.count else {throw DeckError.message("Mac 返回了重复会话，请稍后重试")}
             snapshot=value
             // A valid reply proves bridge connectivity, not that the agent is alive.
             connected=true;hasSynced=true;connectionHelp=nil
@@ -201,7 +205,7 @@ enum Vault {
             #if DEBUG
             print("Deck sync failure: \((error as NSError).domain) \((error as NSError).code): \(error.localizedDescription)")
             #endif
-            guard generation==epoch else{return};connected=false;message="正在重新连接 Mac…"
+            guard generation==epoch, !Task.isCancelled else{return};connected=false;message="正在重新连接 Mac…"
             let ns=error as NSError
             if ns.domain == NSURLErrorDomain && ns.code == NSURLErrorNotConnectedToInternet {
                 connectionHelp="请连接 Wi-Fi，并在 iPhone 设置中允许 Codex Deck 访问本地网络。"
@@ -211,13 +215,14 @@ enum Vault {
         }
     }
     func focus(_ s: DeckSession) async {
-        guard canFocus,opening==nil else{return};opening=s.id;defer{opening=nil}
+        guard canFocus,opening==nil else{return};let generation=epoch;opening=s.id;defer{opening=nil}
         UIImpactFeedbackGenerator(style:.rigid).impactOccurred()
         do {
             _=try await request("/v1/focus",body:JSONEncoder().encode(["threadId":s.id]))
+            guard generation==epoch, !Task.isCancelled else{return}
             feedbackUntil=Date().addingTimeInterval(3)
             message="已发送到 Mac";UINotificationFeedbackGenerator().notificationOccurred(.success)
-        } catch {message="跳转失败，请检查 Mac";UINotificationFeedbackGenerator().notificationOccurred(.error)}
+        } catch {guard generation==epoch, !Task.isCancelled else{return};message="跳转失败，请检查 Mac";UINotificationFeedbackGenerator().notificationOccurred(.error)}
     }
     #if DEBUG
     func showDemo(count: Int = 3) {
