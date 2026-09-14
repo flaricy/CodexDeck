@@ -1314,7 +1314,7 @@ html[lang="en"] .download-copy h2 {
   top: 53%;
   width: 94%;
   height: 44%;
-  transform: perspective(120cqw) rotateX(43deg) rotateZ(-5deg);
+  transform: perspective(200cqw) rotateX(27deg) rotateZ(-2deg);
   transform-origin: 50% 100%;
   transform-style: flat;
 }
